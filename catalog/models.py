@@ -46,3 +46,21 @@ class Contact(models.Model):
     class Meta:
         verbose_name = 'контакт'
         verbose_name_plural = 'контакты'
+
+
+class Blog(models.Model):
+    header = models.CharField(max_length=50, verbose_name='Имя')
+    content = models.TextField(verbose_name='Cодержимое', **NULLABLE)
+    image = models.ImageField(upload_to='catalog/', **NULLABLE, verbose_name='изображение')
+    date_creation = models.DateField(auto_now_add=True, verbose_name='дата создания')
+
+    number_views = models.IntegerField(default=0, verbose_name='количество просмотров')
+    is_publication = models.BooleanField(default=True, verbose_name='опубликовано')
+    slug = models.CharField(max_length=150, verbose_name='slug', **NULLABLE)
+
+    def __str__(self):
+        return f"""{self.header}, {self.slug}, {self.content}"""
+
+    class Meta:
+        verbose_name = 'блог'
+        verbose_name_plural = 'блоги'

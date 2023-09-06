@@ -1,0 +1,19 @@
+{% extends 'catalog/base.html' %}
+{% block seredina_stranicy %}
+
+<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+    <h3 class="display-4">Каталог товаров</h3>
+</div>
+
+{% for obj in object_list %}
+<nav class="nav">
+    <h3>
+        <a class="nav-link active text-dark" aria-current="page" href="products?categoria_id={{obj.id}}">{{ obj.name }}</a>
+    </h3>
+</nav>
+{% endfor %}
+
+
+
+
+{% endblock %}
