@@ -2,8 +2,11 @@ import json
 
 from django.shortcuts import render
 from django.http import HttpResponse
+from django.urls import reverse_lazy, reverse
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from pytils.translit import slugify
 
-from catalog.models import Product, Contact, Category
+from catalog.models import Product, Contact, Category, Blog
 
 
 def index(request):
@@ -12,55 +15,84 @@ def index(request):
         return render(request, 'catalog/index.html', {'products': list_product})
 
 
-def contact(request):
-    if request.method == 'POST':
-        name = request.POST.get('name')
-        phone = request.POST.get('phone')
-        message = request.POST.get('message')
-        print(f"{name}, {phone},{message}")
-    list_contact = Contact.objects.all()
-    return render(request, 'catalog/contact.html', {'contacts': list_contact})
+class ContactListView(ListView):
+    model = Contact
+    context_object_name = 'contacts'
+
+    def get_queryset(self):
+        return Contact.objects.all()
 
 
-def products(request):
-    if request.method == 'POST':
-        name = request.POST.get('name')
-        description = request.POST.get('description')
-        image = request.POST.get('image')
-        categoria = request.POST.get('categoria')
-        price = request.POST.get('price')
-        date_creation = request.POST.get('date_creation')
-        date_change = request.POST.get('date_change')
-        print(f"{name}, {description},{image}, {categoria}, {price}")
-        list_product = Product.objects.all()
-        return render(request, 'catalog/product.html', {'products': list_product})
+class CategoryListView(ListView):
+    model = Category
 
 
-def catalog_products(request):
-    if request.method == 'GET':
-        list_product = Category.objects.all()
-        return render(request, 'catalog/catalog_products.html', {'catalog_products': list_product})
+class ProductListView(ListView):
+    model = Product
+
+    def get_queryset(self, *args, **kwargs):
+        queryset = super().get_queryset(*args, **kwargs)
+        queryset = queryset.filter(categoria_id=self.request.GET.get('categoria_id'))
+        return queryset
 
 
-def underwear(request):
-    if request.method == 'GET':
-        # SELECT id, name FROM public.catalog_category where name = 'Нижнее белье'
-        underwear_category = Category.objects.filter(name='Нижнее белье')
-        # select * from catalog_product where categoria_id = 2
-        list_product = Product.objects.filter(categoria=underwear_category[0])
-        return render(request, 'catalog/underwear.html', {'underwear_products': list_product})
+class ProductDetailView(DetailView):
+    model = Product
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.filter(id=self.kwargs.get("pk"))
+        return queryset
 
 
-def outerwear(request):
-    if request.method == 'GET':
-        # SELECT id, name FROM public.catalog_category where name = 'Верхняя одежда'
-        outerwear_category = Category.objects.filter(name='Верхняя одежда')
-        # select * from catalog_product where categoria_id = 2
-        list_product = Product.objects.filter(categoria=outerwear_category[0])
-        return render(request, 'catalog/outerwear.html', {'outerwear_products': list_product})
+class BlogCreateView(CreateView):
+    model = Blog
+    fields = ('header', 'content', 'image',)
+    success_url = reverse_lazy('catalog:blog_list')
+
+    def form_valid(self, form):
+        if form.is_valid():
+            new_blog = form.save()
+            new_blog.slug = slugify(new_blog.header)
+            new_blog.save()
+        return super().form_valid(form)
 
 
-def product(request, product_id):
-    if request.method == 'GET':
-        p = Product.objects.get(id=product_id)
-        return render(request, 'catalog/product.html', {'product': p})
+class BlogListView(ListView):
+    model = Blog
+
+    def get_queryset(self, *args, **kwargs):
+        queryset = super().get_queryset(*args, **kwargs)
+        queryset = queryset.filter(is_publication=True)
+        return queryset
+
+
+class BlogDetailView(DetailView):
+    model = Blog
+
+    def get_object(self, queryset=None):
+        self.object = super().get_object(queryset)
+        self.object.number_views += 1
+        self.object.save()
+        return self.object
+
+
+class BlogUpdateView(UpdateView):
+    model = Blog
+    fields = ('header', 'content', 'image',)
+    #success_url = reverse_lazy('catalog:blog_list')
+
+    def form_valid(self, form):
+        if form.is_valid():
+            new_blog = form.save()
+            new_blog.slug = slugify(new_blog.header)
+            new_blog.save()
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('catalog:blog_detail', args=[self.kwargs.get('pk')])
+
+
+class BlogDeleteView(DeleteView):
+    model = Blog
+    success_url = reverse_lazy('catalog:blog_list')
