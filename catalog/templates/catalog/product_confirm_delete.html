@@ -1,5 +1,5 @@
 {% extends 'catalog/base.html' %}
-
+{% load crispy_forms_tags %}
 {% block seredina_stranicy %}
 
 <div class="col-12 m-3">
@@ -9,9 +9,10 @@
                 <div class="card-body">
                     <form method="post">
                         {% csrf_token %}
+                        {% crispy form %}
                         <p>Удалить {{ object.name }}?</p>
                         <button type="submit" class="btn btn-success">Удалить</button>
-                        <a href="{% url 'catalog:product_list' %}" type="button"
+                        <a href="{% url 'catalog:product_detail' object.id %}" type="button"
                            class="btn btn-warning">Отмена</a>
                     </form>
                 </div>
