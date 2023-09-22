@@ -64,3 +64,20 @@ class Blog(models.Model):
     class Meta:
         verbose_name = 'блог'
         verbose_name_plural = 'блоги'
+
+
+### ВЕРСИЯ
+class Version(models.Model):
+    #id = models.IntegerField(primary_key=True, verbose_name='id')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='продукт')
+    number = models.IntegerField(default=1, verbose_name='номер версии')
+    name_version = models.CharField(max_length=50, verbose_name='название версии')
+    flag = models.BooleanField(default=True, verbose_name='признак текущей версии')
+
+    def __str__(self):
+        return f"{self.number} - {self.name_version}"
+
+    class Meta:
+        verbose_name = 'версия'
+        verbose_name_plural = 'версии'
+

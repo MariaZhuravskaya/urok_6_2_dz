@@ -1,0 +1,29 @@
+{% extends 'catalog/base.html' %}
+
+{% block seredina_stranicy %}
+
+<div class="row col-6 md-6">
+
+    <div class="card">
+        <h1 class="card-header text-center">{{ object.name_version }}</h1>
+        <div class="card-body">
+            <table class="table table-striped">
+                    <tr>
+                        <th>название версии</th>
+                        <th>номер версии</th>
+                        <th>продукт</th>
+                        <th>признак текущей версии</th>
+                    </tr>
+                    <tr>
+                        <td>{{ object.name_version }}</td>
+                        <td>{{ object.number }}</td>
+                        <td>{{ object.product }}</td>
+                        <td>{{ object.flag }}</td>
+                </table>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

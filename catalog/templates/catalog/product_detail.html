@@ -3,39 +3,51 @@
 {% block seredina_stranicy %}
 
 
-<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-    <h1 class="display-4 fw-normal text-body-emphasis">{{ object.name }} </h1>
-</div>
-
-<div class="row col-12 col-md">
-    <div class="row col-3">
-        <div class="col-4 col-md">
+<div class="container">
+    <div class="col-12 m-3">
+        <div class="row col-6 md-6 pt-md-6">
             <div class="card">
-                <!-- Исходный вариант -->
-                <img src="/media/{{ object.image }}" class="card-img-top {width: 10%; height: 5vw; object-fit: cover;}"
-                     alt="...">
-                <!-- Итоговый вариант шаблонный тег-->
-                <img src="{% media_path object.image %}">
-                <!-- Итоговый вариант шаблонный фильтр-->
-                <img src="{{ object.image|media_path_template }}" />
-
-            </div>
-        </div>
-    </div>
-
-
-    <div class="row col-6">
-        <div class="col-3 col-md">
-            <div class="card">
+                <h1 class="card-header text-center">{{ object.name }}</h1>
                 <div class="card-body">
-                    <p class="card-text">
+
+                    <!-- Исходный вариант -->
+                    <!--                <img src="/media/{{ object.image }}" class="card-img-top {width: 10%; height: 5vw; object-fit: cover;}"-->
+                    <!--                     alt="...">-->
+                    <!-- Итоговый вариант шаблонный тег-->
+                    <img src="{% media_path object.image %}">
+                    <!-- Итоговый вариант шаблонный фильтр-->
+                    <!--                <img src="{{ object.image|media_path_template }}" />-->
+
                     <p>{{ object.description }}</p>
-                    <p>{{ object.price }} руб.</p>
-                    </p>
+
+
+                    <div class="card-footer">
+                        <h1>{{ object.price }} руб.</h1>
+                        <div class="btn-group">
+                            <a href="#"
+                               type="button" class="w-100 btn btn-lg btn-outline-primary">Купить
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-12 m-3">
+                <div class="row col-12 md-6 pt-md-6">
+                    <div class="card">
+                        <h3 class="card-header text-center">Версия - {{ version.number }}</h3>
+                        <div class="card-body">
+                            {% if version.flag == True %}
+                            {{ version.name_version }} - {{ version.number }}
+                            {% else %}
+                            Активной версии нет
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
 {% endblock %}

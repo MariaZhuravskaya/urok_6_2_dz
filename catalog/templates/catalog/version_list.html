@@ -1,27 +1,29 @@
 {% extends 'catalog/base.html' %}
+
 {% block seredina_stranicy %}
 
 
 <div class="card-body">
-    <a class="btn btn-outline-primary m-3" href="{% url 'catalog:product_form' %}">Добавить продукт</a>
+    <a class="btn btn-outline-primary m-3" href="{% url 'catalog:version_form' %}">Добавить версию</a>
     {% for object in object_list %}
     <div class="col-12 m-3">
         <div class="row">
             <div class="col-4">
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title">{{ object.name }}</h5>
+                        <h5 class="card-title">{{ object.name_version }} - версия {{ object.number }} {{object.flag}}</h5>
                     </div>
 
                     <div class="btn-group">
-                        <a href="{% url 'catalog:product_detail' object.pk %}"
-                           class="btn btn-sm btn-outline-secondary">Просмотр</a>
+                        <a href="{% url 'catalog:version_detail' object.pk %}"
+                           class="btn btn-sm btn-outline-secondary">Подробнее</a>
 
-                        <a href="{% url 'catalog:product_update' object.pk %}" type="button"
+                        <a href="{% url 'catalog:version_update' object.pk %}" type="button"
                            class="btn btn-sm btn-outline-secondary">Редактировать</a>
 
-                        <a href="{% url 'catalog:product_delete' object.pk %}" type="button"
+                        <a href="{% url 'catalog:version_delete' object.pk %}" type="button"
                            class="btn btn-sm btn-outline-secondary">Удалить</a>
+
                     </div>
                 </div>
             </div>
@@ -31,4 +33,3 @@
 
 {% endfor %}
 {% endblock %}
-
