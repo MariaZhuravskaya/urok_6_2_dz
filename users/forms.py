@@ -10,10 +10,10 @@ class UserRegisterForm(UserCreationForm):
         fields = ('email', 'password1', 'password2')
 
 
-# class UserResetPasswordForm(PasswordResetForm):
-#
-#     def is_valid(self):
-#         return super().is_valid()
+class UserResetPasswordForm(UserCreationForm):
+    class Meta:
+        model = User
+        fields = ('email',)
 
 
 class UserProfileForm(UserChangeForm):

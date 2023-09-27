@@ -154,3 +154,6 @@ EMAIL_PORT = 465
 EMAIL_HOST_USER = 'zhuravsckajam@yandex.ru'
 EMAIL_HOST_PASSWORD = 'xqmyjleiucrlvobd'
 EMAIL_USE_SSL = True
+
+
+LOGIN_URL = '/'
