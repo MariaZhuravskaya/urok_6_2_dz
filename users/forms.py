@@ -1,4 +1,4 @@
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm, PasswordResetForm
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django import forms
 
 from users.models import User
@@ -8,12 +8,6 @@ class UserRegisterForm(UserCreationForm):
     class Meta:
         model = User
         fields = ('email', 'password1', 'password2')
-
-
-class UserResetPasswordForm(UserCreationForm):
-    class Meta:
-        model = User
-        fields = ('email',)
 
 
 class UserProfileForm(UserChangeForm):
@@ -26,7 +20,12 @@ class UserProfileForm(UserChangeForm):
         self.fields['password'].widget = forms.HiddenInput()
 
 
-class UserForgotPasswordForm(PasswordResetForm):
-    """
-    Запрос на восстановление пароля
-    """
+class PasswordResetRequestForm(forms.Form):
+    email = forms.EmailField()
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        user = User.objects.filter(email=email).first()
+        if not user:
+            raise forms.ValidationError('Пользователь с таким email адресом не найден.')
+        return email

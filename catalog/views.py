@@ -33,9 +33,8 @@ class CategoryListView(ListView):
 #########   Продукт
 
 
-class ProductListView(LoginRequiredMixin, ListView):
+class ProductListView(ListView):
     model = Product
-    raise_exeption = True
 
     def get_queryset(self, *args, **kwargs):
         queryset = super().get_queryset(*args, **kwargs)
@@ -43,30 +42,28 @@ class ProductListView(LoginRequiredMixin, ListView):
         return queryset
 
 
-class ProductCreateView(LoginRequiredMixin, CreateView):
+class ProductCreateView(CreateView):
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy('catalog:category_list')
-    raise_exeption = True
 
     def form_valid(self, form):
         if form.is_valid():
-            product = form.save(commit=False)
-            product.user = self.request.user
-            product.save()
+            self.product = form.save(commit=False)
+            form.instance.product = self.request.user
+            self.product.user = self.request.user
+            self.product.save()
         return super().form_valid(form)
 
 
-class ProductUpdateView(LoginRequiredMixin, UpdateView):
+class ProductUpdateView(UpdateView):
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy('catalog:category_list')
-    raise_exeption = True
 
 
-class ProductDetailView(LoginRequiredMixin, DetailView):
+class ProductDetailView(DetailView):
     model = Product
-    raise_exeption = True
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -79,10 +76,9 @@ class ProductDetailView(LoginRequiredMixin, DetailView):
         return queryset
 
 
-class ProductDeleteView(LoginRequiredMixin, DeleteView):
+class ProductDeleteView(DeleteView):
     model = Product
     success_url = reverse_lazy('catalog:category_list')
-    raise_exeption = True
 
 
 #############   Блог
@@ -180,6 +176,7 @@ class VersionUpdateView(UpdateView):
                     version.save()
                     return super().form_valid(form)
 
+
 class VersionListView(ListView):
     model = Version
 
@@ -192,4 +189,3 @@ class VersionDeleteView(DeleteView):
 class VersionDetailView(DetailView):
     model = Version
     success_url = reverse_lazy('catalog:category_list')
-
