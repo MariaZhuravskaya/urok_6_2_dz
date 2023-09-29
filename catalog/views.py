@@ -1,9 +1,9 @@
 import json
 
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import render, get_object_or_404, redirect
-from django.http import HttpResponse
+
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.shortcuts import render
+from django.http import  Http404
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from pytils.translit import slugify
@@ -33,7 +33,7 @@ class CategoryListView(ListView):
 #########   Продукт
 
 
-class ProductListView(ListView):
+class ProductListView(LoginRequiredMixin, ListView):
     model = Product
 
     def get_queryset(self, *args, **kwargs):
@@ -42,27 +42,27 @@ class ProductListView(ListView):
         return queryset
 
 
-class ProductCreateView(CreateView):
+class ProductCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     model = Product
     form_class = ProductForm
+    permission_required = 'catalog.add_product'
     success_url = reverse_lazy('catalog:category_list')
 
     def form_valid(self, form):
-        if form.is_valid():
-            self.product = form.save(commit=False)
-            form.instance.product = self.request.user
-            self.product.user = self.request.user
-            self.product.save()
+        self.object = form.save(commit=False)
+        if self.object.user_product != self.request.user and not self.request.user.is_authenticated:
+            self.object.save()
+            raise Http404
         return super().form_valid(form)
 
 
-class ProductUpdateView(UpdateView):
+class ProductUpdateView(LoginRequiredMixin, UpdateView):
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy('catalog:category_list')
 
 
-class ProductDetailView(DetailView):
+class ProductDetailView(LoginRequiredMixin, DetailView):
     model = Product
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -76,7 +76,7 @@ class ProductDetailView(DetailView):
         return queryset
 
 
-class ProductDeleteView(DeleteView):
+class ProductDeleteView(LoginRequiredMixin, DeleteView):
     model = Product
     success_url = reverse_lazy('catalog:category_list')
 
