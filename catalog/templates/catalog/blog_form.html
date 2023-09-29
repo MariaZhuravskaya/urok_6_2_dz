@@ -9,17 +9,19 @@
             <div class="card">
                 <div class="card-body">
                     <form method="post">
-                        {% csrf_token %}
+                        <div>
+                            {% csrf_token %}
 
-                        {% crispy form %}
+                            {% crispy form %}
 
-                        <button type="submit" class="btn btn-success">
-                            {% if object %}
+                            <button type="submit" class="btn btn-success">
+                                {% if object %}
                                 Сохранить
-                            {% else %}
+                                {% else %}
                                 Создать
-                            {% endif %}
-                        </button>
+                                {% endif %}
+                            </button>
+                        </div>
                     </form>
                 </div>
             </div>

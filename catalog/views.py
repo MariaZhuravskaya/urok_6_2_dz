@@ -42,17 +42,16 @@ class ProductListView(LoginRequiredMixin, ListView):
         return queryset
 
 
-class ProductCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+class ProductCreateView(LoginRequiredMixin, CreateView):
     model = Product
     form_class = ProductForm
-    permission_required = 'catalog.add_product'
+
     success_url = reverse_lazy('catalog:category_list')
 
     def form_valid(self, form):
-        self.object = form.save(commit=False)
-        if self.object.user_product != self.request.user and not self.request.user.is_authenticated:
-            self.object.save()
-            raise Http404
+        self.object = form.save()
+        self.object.user_product = self.request.user
+        self.object.save()
         return super().form_valid(form)
 
 

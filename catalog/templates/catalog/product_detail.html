@@ -19,6 +19,7 @@
                     <!--                <img src="{{ object.image|media_path_template }}" />-->
 
                     <p>{{ object.description }}</p>
+                    <p>{{ object.user_product|default:'без указания пользователя' }}</p>
 
 
                     <div class="card-footer">
