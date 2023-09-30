@@ -1,21 +1,22 @@
 import json
 
 
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
+
 from django.shortcuts import render
-from django.http import  Http404
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from pytils.translit import slugify
 
 from catalog.forms import ProductForm, VersionForm
 from catalog.models import Product, Contact, Category, Blog, Version
+from catalog.services import get_product_list
 
 
 def index(request):
     if request.method == 'GET':
-        list_product = Product.objects.all()
-        return render(request, 'catalog/index.html', {'products': list_product})
+
+        return render(request, 'catalog/index.html', {'products': get_product_list})
 
 
 class ContactListView(ListView):
